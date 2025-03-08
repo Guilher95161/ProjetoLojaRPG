@@ -13,7 +13,11 @@
       <th>Preço</th>
       <th>Estoque</th>
       <th>Lançamento</th>
+      {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated  %}
+       <th>Quantidade</th>
+      {%else%}
       <th>Opções</th>
+      {% endif %}
     </tr>
     {% for jogo in object_list%}
     <tr>
@@ -23,6 +27,9 @@
       <td>{{jogo.estoque}}</td>
       <td>{{jogo.lancamento}}</td>
       <td>
+        {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated  %}
+        <!--Depois de fazer os modelos eu vejo isso daqui-->
+        {% else %}
         <a
           href="{% url 'editar-jogo' jogo.pk %}"
           class="btn btn-warning btn-sm"
@@ -34,6 +41,7 @@
           title="Excluir"
           >Excluir</a
         >
+        {% endif %}
       </td>
     </tr>
     {% empty %}

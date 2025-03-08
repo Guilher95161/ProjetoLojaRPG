@@ -10,3 +10,14 @@ class Jogo(models.Model):
 
     def __str__(self):
         return self.nome
+    
+class Compra(models.Model):
+   # usuario = models.ForeignKey() Vou ver se uso o usuário que está logado ou uso Perfil ou criar um Cliente
+    precoTotal = models.DecimalField(max_digits = 10, decimal_places = 2)
+    dataCompra = models.DateField()
+
+class ItemCompra(models.Model):
+    compra = models.ForeignKey(Compra, on_delete = models.PROTECT)
+    #usuario = models.ForeignKey() Vou ver se uso o usuário que está logado ou uso Perfil ou criar um Cliente, pra representar o usuário
+    quantidade = models.IntegerField()
+    
