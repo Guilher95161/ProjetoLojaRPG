@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 class Jogo(models.Model):
     nome = models.CharField(max_length=50)
@@ -12,12 +12,18 @@ class Jogo(models.Model):
         return self.nome
     
 class Compra(models.Model):
-   # usuario = models.ForeignKey() Vou ver se uso o usuário que está logado ou uso Perfil ou criar um Cliente
+    usuario = models.ForeignKey(User, on_delete= models.PROTECT)
     precoTotal = models.DecimalField(max_digits = 10, decimal_places = 2)
     dataCompra = models.DateField()
 
+    def __str__(self):
+        return f"Compra {self.id} de {self.usuario}"
+
 class ItemCompra(models.Model):
     compra = models.ForeignKey(Compra, on_delete = models.PROTECT)
-    #usuario = models.ForeignKey() Vou ver se uso o usuário que está logado ou uso Perfil ou criar um Cliente, pra representar o usuário
+    jogo = models.ForeignKey(Jogo, on_delete= models.PROTECT)
     quantidade = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.quantidade}x {self.jogo.nome}"
     
