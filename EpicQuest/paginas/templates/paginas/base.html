@@ -40,12 +40,12 @@
               aria-haspopup="true" aria-expanded="false">
               Cadastros
             </a>
+            <!-- Fazer de Compra,Avaliação para usuario e admin-->
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="{% url 'listar-jogo' %}">Jogos</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
+              <hr class="dropdown-divider">
+              <li><a class="dropdown-item" href="{% url 'listar-categoria' %}">Categorias</a></li>
+              <hr class="dropdown-divider">
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
           </li>

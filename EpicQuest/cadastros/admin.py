@@ -4,3 +4,5 @@ from .models import *
 admin.site.register(Jogo)
 admin.site.register(Compra)
 admin.site.register(ItemCompra)
+admin.site.register(Categoria)
+admin.site.register(Avaliacao)

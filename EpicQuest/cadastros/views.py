@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from braces.views import LoginRequiredMixin,GroupRequiredMixin
 from django.db import transaction
 from .views import *
-from .models import ItemCompra, Jogo,Compra
+from .models import ItemCompra, Jogo,Compra,Categoria
 
 # Create your views here.
 class JogoCreate(GroupRequiredMixin,LoginRequiredMixin,CreateView):
@@ -133,3 +133,43 @@ def finalizar_compra(request):
         return redirect('listar-jogo')
 
     return redirect('listar-jogo')
+
+'''CompraList vai listar todas as compras existentes caso seja um administrador
+Vai ter um botão e caso o administrador clique nesse botão, irá aparecer todos os itens comprados por aquele usuário'''
+class CategoriaCreate(GroupRequiredMixin,LoginRequiredMixin,CreateView):
+    group_required = ["Administrador","Funcionario"]
+    model = Categoria
+    fields = ['nome']
+    template_name = 'cadastros/form.html'
+    success_url = reverse_lazy('listar-categoria')
+    login_url = reverse_lazy('login')
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titulo'] = "Registro de Novo Categoria"
+        context['botao'] = "Cadastrar"
+        return context
+
+class CategoriaUpdate(GroupRequiredMixin,LoginRequiredMixin,UpdateView):
+    group_required = ["Administrador","Funcionario"]
+    model = Categoria
+    fields = ['nome']
+    template_name = 'cadastros/form.html'
+    success_url = reverse_lazy('listar-categoria')
+    login_url = reverse_lazy('login')
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titulo'] = "Atualização de Categoria"
+        context['botao'] = "Atualizar"
+        return context
+class CategoriaDelete(GroupRequiredMixin,LoginRequiredMixin,DeleteView):
+    group_required = ["Administrador","Funcionario"]
+    model = Categoria
+    template_name = 'cadastros/form-excluir.html'
+    success_url = reverse_lazy('listar-categoria')
+    login_url = reverse_lazy('login')
+    
+class CategoriaList(ListView):
+    model = Categoria
+    template_name = 'cadastros/listas/categoria.html'
+
+#Avaliação só existirá para cada jogo e de cada usuário e o usuário já deve ter feito uma compra de jogo, só o usuario pode criar, mas o RUD, todos podem fazer, só para aquele usuário especifico aparecerá os seus e para o Funcionario e Administrador o de todo mundo

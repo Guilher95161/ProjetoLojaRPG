@@ -1,0 +1,29 @@
+{% extends 'paginas/base.html' %} {% load static %}
+{% block titulo %} Lista de Categorias {% endblock %} {% block conteudo %}
+<h3>Lista de Categorias registrados
+  <a href="{% url 'cadastrar-categoria' %}" class="btn btn-primary btn-sm float end">Adicionar Categoria</a>
+</h3>
+<hr>
+<form method="POST" action="">
+  {% csrf_token %}
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <tr>
+        <th>Nome</th>
+        <th>Opções</th>
+      </tr>
+      {% for categoria in object_list %}
+      <tr>
+        <td>{{categoria.nome}}</td>
+        <td><a href="{% url 'editar-categoria' categoria.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>
+            <a href="{% url 'excluir-categoria' categoria.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a></td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7">Nenhum categoria registrado</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</form>
+{% endblock %}

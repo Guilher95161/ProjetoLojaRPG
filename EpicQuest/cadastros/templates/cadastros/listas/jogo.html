@@ -1,4 +1,4 @@
-{% extends 'paginas/base.html' %} {% load static %} 
+{% extends 'paginas/base.html' %} {% load static %}
 {% block titulo %} Lista de Jogos {% endblock %} {% block conteudo %}
 <h3>Lista de Jogos registrados
   <a href="{% url 'cadastrar-jogo' %}" class="btn btn-primary btn-sm float end">Adicionar Jogo</a>
@@ -10,36 +10,48 @@
     <table class="table table-striped">
       <tr>
         <th>Nome</th>
+        {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
         <th>Descrição</th>
+        {% endif %}
         <th>Preço</th>
         <th>Estoque</th>
         <th>Lançamento</th>
+        <th>Categorias</th>
         {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
-          <th>Quantidade</th>
-          <th>Adicionar</th>
+        <th>Quantidade</th>
+        <th>Adicionar</th>
         {% else %}
-          <th>Opções</th>
+        <th>Opções</th>
         {% endif %}
       </tr>
       {% for jogo in object_list %}
       <tr>
         <td>{{ jogo.nome }}</td>
+        {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
         <td>{{ jogo.descricao }}</td>
-        <td>R$ {{ jogo.preco }}</td>
+        {% endif %}
+        <td>R${{ jogo.preco }}</td>
         <td>{{ jogo.estoque }}</td>
         <td>{{ jogo.lancamento }}</td>
-        
-          {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated  %}
-          <td>
-            <input type="number" name="quantidade_{{ jogo.id }}" id="quantidade_{{ jogo.id }}" min="1" max="{{ jogo.estoque }}" value="1">
-          </td>          
-          {% endif %}
         <td>
-          {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated  %}
-            <button type="button" class="btn btn-success btn-sm" onclick="adicionarAoCarrinho({{ jogo.id }}, '{{ jogo.nome }}', {{ jogo.preco }})">Adicionar</button>
+          {% for categoria in jogo.categorias.all %}
+          {{ categoria.nome }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </td>
+
+        {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
+        <td>
+          <input type="number" name="quantidade_{{ jogo.id }}" id="quantidade_{{ jogo.id }}" min="1"
+            max="{{ jogo.estoque }}" value="1">
+        </td>
+        {% endif %}
+        <td>
+          {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
+          <button type="button" class="btn btn-success btn-sm"
+            onclick="adicionarAoCarrinho({{ jogo.id }}, '{{ jogo.nome }}', {{ jogo.preco }})">Adicionar</button>
           {% elif not user.groups.all.0.name == "Cliente" %}
-            <a href="{% url 'editar-jogo' jogo.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>
-            <a href="{% url 'excluir-jogo' jogo.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a>
+          <a href="{% url 'editar-jogo' jogo.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>
+          <a href="{% url 'excluir-jogo' jogo.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a>
           {% endif %}
         </td>
       </tr>
@@ -52,12 +64,12 @@
   </div>
 
   {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
-    <h3>Resumo da Compra</h3>
-    <div id="resumo-compra">
-      <p>Nenhum jogo adicionado ainda.</p>
-    </div>
+  <h3>Resumo da Compra</h3>
+  <div id="resumo-compra">
+    <p>Nenhum jogo adicionado ainda.</p>
+  </div>
 
-    <button type="submit" class="btn btn-primary">Finalizar Compra</button>
+  <button type="submit" class="btn btn-primary">Finalizar Compra</button>
   {% endif %}
 </form>
 
