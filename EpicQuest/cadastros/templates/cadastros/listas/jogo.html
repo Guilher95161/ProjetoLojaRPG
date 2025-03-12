@@ -1,54 +1,105 @@
-<!--MUDAR aqui para um versão cliente e outra dos dois outros grupos, btw-->
 {% extends 'paginas/base.html' %} {% load static %} 
 {% block titulo %} Lista de Jogos {% endblock %} {% block conteudo %}
 <h3>Lista de Jogos registrados
   <a href="{% url 'cadastrar-jogo' %}" class="btn btn-primary btn-sm float end">Adicionar Jogo</a>
 </h3>
 <hr>
-<div class="table-responsive">
-  <table class="table table=striped">
-    <tr>
-      <th>Nome</th>
-      <th>Descrição</th>
-      <th>Preço</th>
-      <th>Estoque</th>
-      <th>Lançamento</th>
-      {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated  %}
-       <th>Quantidade</th>
-      {%else%}
-      <th>Opções</th>
-      {% endif %}
-    </tr>
-    {% for jogo in object_list%}
-    <tr>
-      <td>{{jogo.nome}}</td>
-      <td>{{jogo.descricao}}</td>
-      <td>{{jogo.preco}}</td>
-      <td>{{jogo.estoque}}</td>
-      <td>{{jogo.lancamento}}</td>
-      <td>
-        {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated  %}
-        <!--Depois de fazer os modelos eu vejo isso daqui-->
+<form method="POST" action="{% url 'finalizar-compra' %}">
+  {% csrf_token %}
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <tr>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Preço</th>
+        <th>Estoque</th>
+        <th>Lançamento</th>
+        {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
+          <th>Quantidade</th>
+          <th>Adicionar</th>
         {% else %}
-        <a
-          href="{% url 'editar-jogo' jogo.pk %}"
-          class="btn btn-warning btn-sm"
-          title="Editar"
-          >Editar</a
-        ><a
-          href="{% url 'excluir-jogo' jogo.pk %}"
-          class="btn btn-danger btn-sm"
-          title="Excluir"
-          >Excluir</a
-        >
+          <th>Opções</th>
         {% endif %}
-      </td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="6">Nenhum campo registro</td>
-    </tr>
-    {% endfor %}
-  </table>
-</div>
+      </tr>
+      {% for jogo in object_list %}
+      <tr>
+        <td>{{ jogo.nome }}</td>
+        <td>{{ jogo.descricao }}</td>
+        <td>R$ {{ jogo.preco }}</td>
+        <td>{{ jogo.estoque }}</td>
+        <td>{{ jogo.lancamento }}</td>
+        
+          {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated  %}
+          <td>
+            <input type="number" name="quantidade_{{ jogo.id }}" id="quantidade_{{ jogo.id }}" min="1" max="{{ jogo.estoque }}" value="1">
+          </td>          
+          {% endif %}
+        <td>
+          {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated  %}
+            <button type="button" class="btn btn-success btn-sm" onclick="adicionarAoCarrinho({{ jogo.id }}, '{{ jogo.nome }}', {{ jogo.preco }})">Adicionar</button>
+          {% elif not user.groups.all.0.name == "Cliente" %}
+            <a href="{% url 'editar-jogo' jogo.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>
+            <a href="{% url 'excluir-jogo' jogo.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7">Nenhum jogo registrado</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
+    <h3>Resumo da Compra</h3>
+    <div id="resumo-compra">
+      <p>Nenhum jogo adicionado ainda.</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Finalizar Compra</button>
+  {% endif %}
+</form>
+
+<script>
+  let carrinho = [];
+
+  function adicionarAoCarrinho(jogoId, nome, preco) {
+    let quantidadeInput = document.getElementById(`quantidade_${jogoId}`);
+    let quantidade = parseInt(quantidadeInput.value);
+
+    if (quantidade > 0) {
+      let itemExistente = carrinho.find(item => item.jogoId === jogoId);
+
+      if (itemExistente) {
+        itemExistente.quantidade += quantidade;
+      } else {
+        carrinho.push({ jogoId, nome, preco, quantidade });
+      }
+
+      atualizarResumoCompra();
+    }
+  }
+
+  function atualizarResumoCompra() {
+    let resumoDiv = document.getElementById("resumo-compra");
+    resumoDiv.innerHTML = "";
+
+    if (carrinho.length === 0) {
+      resumoDiv.innerHTML = "<p>Nenhum jogo adicionado ainda.</p>";
+      return;
+    }
+
+    let lista = "<ul>";
+    let total = 0;
+
+    carrinho.forEach(item => {
+      lista += `<li>${item.quantidade}x ${item.nome} - R$ ${(item.preco * item.quantidade).toFixed(2)}</li>`;
+      total += item.preco * item.quantidade;
+    });
+
+    lista += `</ul><p><strong>Total: R$ ${total.toFixed(2)}</strong></p>`;
+    resumoDiv.innerHTML = lista;
+  }
+</script>
 {% endblock %}
