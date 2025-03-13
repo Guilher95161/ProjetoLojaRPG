@@ -1,0 +1,45 @@
+{% extends 'paginas/base.html' %}
+{% load static %}
+
+{% block titulo %} Lista de Avaliações {% endblock %}
+
+{% block conteudo %}
+<h3>Lista de Avaliações Registradas</h3>
+<hr>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <tr>
+      {% if request.user.groups.all.0.name in "Administrador,Funcionario" %}
+        <th>Usuário</th>
+      {% endif %}
+      <th>Jogo</th>
+      <th>Nota</th>
+      <th>Comentário</th>
+      <th>Data</th>
+      <th>Opções</th>
+    </tr>
+    
+    {% for avaliacao in object_list %}
+    <tr>
+      {% if request.user.groups.all.0.name in "Administrador,Funcionario" %}
+        <td>{{ avaliacao.usuario.username }}</td>
+      {% endif %}
+      <td>{{ avaliacao.jogo.nome }}</td>
+      <td>{{ avaliacao.nota }}</td>
+      <td>{{ avaliacao.comentario|default:"Sem comentário" }}</td>
+      <td>{{ avaliacao.data|date:"d/m/Y H:i" }}</td>
+      <td>
+        <a href="{% url 'editar-avaliacao' avaliacao.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>
+        <a href="{% url 'excluir-avaliacao' avaliacao.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6">Nenhuma avaliação registrada</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+{% endblock %}

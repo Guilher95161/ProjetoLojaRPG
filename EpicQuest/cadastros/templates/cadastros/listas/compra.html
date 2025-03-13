@@ -1,0 +1,42 @@
+{% extends 'paginas/base.html' %}
+{% load static %}
+
+{% block titulo %} Lista de Compras {% endblock %}
+
+{% block conteudo %}
+<h3>Lista de Compras Registradas</h3>
+<hr>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <tr>
+      {% if request.user.groups.all.0.name in "Administrador,Funcionario" %}
+        <th>Usuário</th>
+      {% endif %}
+      <th>ID Compra</th>
+      <th>Preço Total</th>
+      <th>Data</th>
+      <th>Opções</th>
+    </tr>
+    
+    {% for compra in object_list %}
+    <tr>
+      {% if request.user.groups.all.0.name in "Administrador,Funcionario" %}
+        <td>{{ compra.usuario.username }}</td>
+      {% endif %}
+      <td>{{ compra.id }}</td>
+      <td>R$ {{ compra.precoTotal }}</td>
+      <td>{{ compra.dataCompra|date:"d/m/Y" }}</td>
+      <td>
+        <a href="{% url 'detalhar-compra' compra.pk %}" class="btn btn-info btn-sm" title="Ver Detalhes">Detalhar</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6">Nenhuma compra registrada</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+{% endblock %}

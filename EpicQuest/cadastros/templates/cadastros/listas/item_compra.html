@@ -1,0 +1,32 @@
+{% extends 'paginas/base.html' %}
+{% load static %}
+
+{% block titulo %} Detalhes da Compra {% endblock %}
+
+{% block conteudo %}
+<h3>Itens da Compra #{{ compra_id }}</h3>
+<hr>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <tr>
+      <th>Jogo</th>
+      <th>Quantidade</th>
+    </tr>
+    
+    {% for item in object_list %}
+    <tr>
+      <td>{{ item.jogo.nome }}</td>
+      <td>{{ item.quantidade }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="2">Nenhum item registrado nesta compra</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<a href="{% url 'listar-compra' %}" class="btn btn-secondary">Voltar</a>
+
+{% endblock %}

@@ -21,45 +21,64 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto">
+          
+          <!-- Se o usuário estiver logado -->
           {% if request.user.is_authenticated %}
           <li>
-            <a href="{% url 'atualizar-dados' %}" class="nav-link">
-              Meus Dados
-            </a>
+            <a href="{% url 'atualizar-dados' %}" class="nav-link">Meus Dados</a>
           </li>
           {% else %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'registrar' %}">Cadastrar-se</a>
           </li>
           {% endif %}
+          
+          <!-- Se o usuário for Cliente ou não estiver logado -->
           {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'listar-jogo' %}">Catálogo de Jogos</a></li>
-          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'listar-jogo' %}">Catálogo de Jogos</a>
+          </li>
+          {% endif %}
+
+          <!-- Se o usuário for Cliente, mostrar "Minhas Compras" e "Minhas Avaliações" -->
+          {% if user.groups.all.0.name == "Cliente" %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'listar-compra' %}">Minhas Compras</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'listar-avaliacao' %}">Minhas Avaliações</a>
+          </li>
+          {% endif %}
+
+          <!-- Se o usuário for Admin ou Funcionário, mostrar menus de gerenciamento -->
+          {% if user.groups.all.0.name in "Administrador,Funcionario" %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
               Cadastros
             </a>
-            <!-- Fazer de Compra,Avaliação para usuario e admin-->
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="{% url 'listar-jogo' %}">Jogos</a></li>
               <hr class="dropdown-divider">
               <li><a class="dropdown-item" href="{% url 'listar-categoria' %}">Categorias</a></li>
               <hr class="dropdown-divider">
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
+              <li><a class="dropdown-item" href="{% url 'listar-compra' %}">Todas as Compras</a></li>
+              <hr class="dropdown-divider">
+              <li><a class="dropdown-item" href="{% url 'listar-avaliacao' %}">Todas as Avaliações</a></li>
             </ul>
           </li>
           {% endif %}
+          
+          <!-- Login e Logout -->
           {% if request.user.is_authenticated %}
           <li class="nav-item dropdown" id="dropdownLogin">
             <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false">Usuário:{{user}}</a>
+              aria-expanded="false">Usuário: {{ user }}</a>
             <ul class="dropdown-menu" id="itensLogin">
               <li>
                 <form action="{% url 'logout' %}" method="post">
-                  {% csrf_token %}<button type="submit" class="btn dropdown-item">
-                    Sair
-                  </button>
+                  {% csrf_token %}
+                  <button type="submit" class="btn dropdown-item">Sair</button>
                 </form>
               </li>
             </ul>
@@ -74,7 +93,10 @@
 
   {% block tagsdiv %}
   <div class="container text-center">
-    {% endblock %} {% block conteudo %} {% endblock %}
+  {% endblock %}
+  
+  {% block conteudo %} 
+  {% endblock %}
   </div>
 
   <footer class="footer">

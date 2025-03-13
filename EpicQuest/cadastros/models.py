@@ -41,5 +41,8 @@ class Avaliacao(models.Model):
     comentario = models.TextField(blank=True, null=True)
     data = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('usuario', 'jogo')
+
     def __str__(self):
         return f"Avaliação de {self.usuario} para {self.jogo.nome}"
