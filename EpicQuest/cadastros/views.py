@@ -8,13 +8,13 @@ from django.urls import reverse_lazy
 from braces.views import LoginRequiredMixin,GroupRequiredMixin
 from django.db import transaction
 from .views import *
-from .models import ItemCompra, Jogo, Compra, Categoria, Avaliacao
+from .models import ItemCompra, Jogo, Compra, Categoria, Avaliacao, Plataforma
 
 # Create your views here.
 class JogoCreate(GroupRequiredMixin,LoginRequiredMixin,CreateView):
     group_required = ["Administrador","Funcionario"]
     model = Jogo
-    fields = ['nome','descricao','preco','estoque','lancamento']
+    fields = ['nome','descricao','preco','estoque','lancamento','categorias','plataformas']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-jogo')
     login_url = reverse_lazy('login')
@@ -27,7 +27,7 @@ class JogoCreate(GroupRequiredMixin,LoginRequiredMixin,CreateView):
 class JogoUpdate(GroupRequiredMixin,LoginRequiredMixin,UpdateView):
     group_required = ["Administrador","Funcionario"]
     model = Jogo
-    fields = ['nome','descricao','preco','estoque','lancamento']
+    fields = ['nome','descricao','preco','estoque','lancamento','categorias','plataformas']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-jogo')
     login_url = reverse_lazy('login')
@@ -156,6 +156,7 @@ class ItemCompraList(LoginRequiredMixin, ListView):
         context['compra_id'] = self.kwargs['compra_id']  # Passa o ID da compra para o template
         return context
 
+
 class CategoriaCreate(GroupRequiredMixin,LoginRequiredMixin,CreateView):
     group_required = ["Administrador","Funcionario"]
     model = Categoria
@@ -181,6 +182,7 @@ class CategoriaUpdate(GroupRequiredMixin,LoginRequiredMixin,UpdateView):
         context['titulo'] = "Atualização de Categoria"
         context['botao'] = "Atualizar"
         return context
+    
 class CategoriaDelete(GroupRequiredMixin,LoginRequiredMixin,DeleteView):
     group_required = ["Administrador","Funcionario"]
     model = Categoria
@@ -191,6 +193,8 @@ class CategoriaDelete(GroupRequiredMixin,LoginRequiredMixin,DeleteView):
 class CategoriaList(ListView):
     model = Categoria
     template_name = 'cadastros/listas/categoria.html'
+
+
 class AvaliacaoCreate(LoginRequiredMixin, CreateView):
     model = Avaliacao
     fields = ['jogo', 'nota', 'comentario']
@@ -262,3 +266,41 @@ class AvaliacaoList(LoginRequiredMixin, ListView):
             return Avaliacao.objects.all()
         # Caso contrário, vê apenas as próprias avaliações
         return Avaliacao.objects.filter(usuario=usuario)
+    
+
+class PlataformaCreate(GroupRequiredMixin,LoginRequiredMixin,CreateView):
+    group_required = ["Administrador","Funcionario"]
+    model = Plataforma
+    fields = ['nome']
+    template_name = 'cadastros/form.html'
+    success_url = reverse_lazy('listar-plataforma')
+    login_url = reverse_lazy('login')
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titulo'] = "Registro de Novo Categoria"
+        context['botao'] = "Cadastrar"
+        return context
+
+class PlataformaUpdate(GroupRequiredMixin,LoginRequiredMixin,UpdateView):
+    group_required = ["Administrador","Funcionario"]
+    model = Plataforma
+    fields = ['nome']
+    template_name = 'cadastros/form.html'
+    success_url = reverse_lazy('listar-plataforma')
+    login_url = reverse_lazy('login')
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titulo'] = "Atualização de Categoria"
+        context['botao'] = "Atualizar"
+        return context
+    
+class PlataformaDelete(GroupRequiredMixin,LoginRequiredMixin,DeleteView):
+    group_required = ["Administrador","Funcionario"]
+    model = Plataforma
+    template_name = 'cadastros/form-excluir.html'
+    success_url = reverse_lazy('listar-plataforma')
+    login_url = reverse_lazy('login')
+    
+class PlataformaList(ListView):
+    model = Plataforma
+    template_name = 'cadastros/listas/plataforma.html'

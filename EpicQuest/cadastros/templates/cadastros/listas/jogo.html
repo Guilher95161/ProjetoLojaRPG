@@ -7,59 +7,61 @@
 <form method="POST" action="{% url 'finalizar-compra' %}">
   {% csrf_token %}
   <div class="table-responsive">
-    <table class="table table-striped">
-      <tr>
-        <th>Nome</th>
-        {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
-        <th>Descrição</th>
-        {% endif %}
-        <th>Preço</th>
-        <th>Estoque</th>
-        <th>Lançamento</th>
-        <th>Categorias</th>
-        {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
-        <th>Quantidade</th>
-        <th>Adicionar</th>
-        {% else %}
-        <th>Opções</th>
-        {% endif %}
-      </tr>
-      {% for jogo in object_list %}
-      <tr>
-        <td>{{ jogo.nome }}</td>
-        {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
-        <td>{{ jogo.descricao }}</td>
-        {% endif %}
-        <td>R${{ jogo.preco }}</td>
-        <td>{{ jogo.estoque }}</td>
-        <td>{{ jogo.lancamento }}</td>
-        <td>
-          {% for categoria in jogo.categorias.all %}
-          {{ categoria.nome }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        </td>
-
-        {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
-        <td>
-          <input type="number" name="quantidade_{{ jogo.id }}" id="quantidade_{{ jogo.id }}" min="1"
-            max="{{ jogo.estoque }}" value="1">
-        </td>
-        {% endif %}
-        <td>
+    <table class="table table-striped" id="tabela-listar">
+      <thead>
+        <tr>
+          <th>Nome</th>
           {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
-          <button type="button" class="btn btn-success btn-sm"
-            onclick="adicionarAoCarrinho({{ jogo.id }}, '{{ jogo.nome }}', {{ jogo.preco }})">Adicionar</button>
-          {% elif not user.groups.all.0.name == "Cliente" %}
-          <a href="{% url 'editar-jogo' jogo.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>
-          <a href="{% url 'excluir-jogo' jogo.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a>
+          <th>Descrição</th>
           {% endif %}
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="7">Nenhum jogo registrado</td>
-      </tr>
-      {% endfor %}
+          <th>Preço</th>
+          <th>Estoque</th>
+          <th>Lançamento</th>
+          <th>Categorias</th>
+          {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
+          <th>Quantidade</th>
+          <th>Adicionar</th>
+          {% else %}
+          <th>Opções</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for jogo in object_list %}
+        <tr>
+          <td>{{ jogo.nome }}</td>
+          {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}<td>{{ jogo.descricao }}</td>{% endif %}
+          <td>R${{ jogo.preco }}</td>
+          <td>{{ jogo.estoque }}</td>
+          <td>{{ jogo.lancamento }}</td>
+          <td>
+            {% for categoria in jogo.categorias.all %}
+            {{ categoria.nome }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          </td>
+
+          {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
+          <td>
+            <input type="number" name="quantidade_{{ jogo.id }}" id="quantidade_{{ jogo.id }}" min="1"
+              max="{{ jogo.estoque }}" value="1">
+          </td>
+          {% endif %}
+          <td>
+            {% if user.groups.all.0.name == "Cliente" or not user.is_authenticated %}
+            <button type="button" class="btn btn-success btn-sm"
+              onclick="adicionarAoCarrinho({{ jogo.id }}, '{{ jogo.nome }}', {{ jogo.preco }})">Adicionar</button>
+            {% elif not user.groups.all.0.name == "Cliente" %}
+            <a href="{% url 'editar-jogo' jogo.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>
+            <a href="{% url 'excluir-jogo' jogo.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7">Nenhum jogo registrado</td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
   </div>
 
@@ -114,4 +116,40 @@
     resumoDiv.innerHTML = lista;
   }
 </script>
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+    $('#tabela-listar').DataTable({
+      responsive: true,
+      bSort: true,
+      aaSorting: [],
+      pageLength: 10,
+      language: {
+        decimal: "",
+        emptyTable: "Sem dados disponíveis",
+        info: "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+        infoEmpty: "Mostrando de 0 até 0 de 0 registos",
+        infoFiltered: "(filtrado de MAX registros no total)",
+        infoPostFix: "",
+        thousands: ",",
+        lengthMenu: "Mostrar _MENU_ registros",
+        loadingRecords: "A carregar dados...",
+        processing: "A processar...",
+        search: "Procurar:",
+        zeroRecords: "Não foram encontrados resultados",
+        paginate: {
+          first: "Primeiro",
+          last: "Último",
+          next: "Seguinte",
+          previous: "Anterior"
+        },
+        aria: {
+          sortAscending: ": ordem crescente",
+          sortDescending: ": ordem decrescente"
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}
 {% endblock %}

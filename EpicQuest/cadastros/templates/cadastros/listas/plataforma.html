@@ -1,35 +1,28 @@
 {% extends 'paginas/base.html' %} {% load static %}
-{% block titulo %} Lista de Categorias {% endblock %} {% block conteudo %}
-<h3>Lista de Categorias registrados
-  <a href="{% url 'cadastrar-categoria' %}" class="btn btn-primary btn-sm float end">Adicionar Categoria</a>
+{% block titulo %} Lista de Plataformas {% endblock %} {% block conteudo %}
+<h3>Lista de Plataformas registrados
+  <a href="{% url 'cadastrar-plataforma' %}" class="btn btn-primary btn-sm float end">Adicionar Plataforma</a>
 </h3>
 <hr>
 <form method="POST" action="">
   {% csrf_token %}
   <div class="table-responsive">
-    <table class="table table-striped" id="tabela-listar">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Opções</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for categoria in object_list %}
-        <tr>
-          <td>{{categoria.nome}}</td>
-          <td><a href="{% url 'editar-categoria' categoria.pk %}" class="btn btn-warning btn-sm"
-              title="Editar">Editar</a>
-            <a href="{% url 'excluir-categoria' categoria.pk %}" class="btn btn-danger btn-sm"
-              title="Excluir">Excluir</a>
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="7">Nenhum categoria registrado</td>
-        </tr>
-        {% endfor %}
-      </tbody>
+    <table class="table table-striped">
+      <tr>
+        <th>Nome</th>
+        <th>Opções</th>
+      </tr>
+      {% for plataforma in object_list %}
+      <tr>
+        <td>{{plataforma.nome}}</td>
+        <td><a href="{% url 'editar-plataforma' plataforma.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>
+            <a href="{% url 'excluir-plataforma' plataforma.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a></td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7">Nenhum plataforma registrado</td>
+      </tr>
+      {% endfor %}
     </table>
   </div>
 </form>

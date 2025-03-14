@@ -14,10 +14,15 @@ urlpatterns = [
     
     path('listar/avaliacao/', AvaliacaoList.as_view(), name='listar-avaliacao'),
     path('cadastrar/avaliacao', AvaliacaoCreate.as_view(), name='cadastrar-avaliacao'),
-    path('avaliacao/<int:pk>/editar/', AvaliacaoUpdate.as_view(), name='editar-avaliacao'),
-    path('avaliacao/<int:pk>/excluir/', AvaliacaoDelete.as_view(), name='excluir-avaliacao'),
+    path('avaliacao/editar/<int:pk>/', AvaliacaoUpdate.as_view(), name='editar-avaliacao'),
+    path('avaliacao/excluir/<int:pk>/', AvaliacaoDelete.as_view(), name='excluir-avaliacao'),
 
     path('listar/compra/',CompraList.as_view(), name='listar-compra'),
 
     path('listar/compra/<int:compra_id>/', ItemCompraList.as_view(), name='detalhar-compra'),
+
+    path('cadastrar/plataforma/',PlataformaCreate.as_view(),name='cadastrar-plataforma'),
+    path('editar/plataforma/<int:pk>/',PlataformaUpdate.as_view(),name='editar-plataforma' ),
+    path('excluir/plataforma/<int:pk>',PlataformaDelete.as_view(),name='excluir-plataforma'),
+    path('listar/plataforma/',PlataformaList.as_view(),name='listar-plataforma'),
 ]

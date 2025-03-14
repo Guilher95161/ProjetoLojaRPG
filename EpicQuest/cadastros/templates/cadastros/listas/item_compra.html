@@ -30,3 +30,39 @@
 <a href="{% url 'listar-compra' %}" class="btn btn-secondary">Voltar</a>
 
 {% endblock %}
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+    $('#tabela-listar').DataTable({
+      responsive: true,
+      bSort: true,
+      aaSorting: [],
+      pageLength: 10,
+      language: {
+        decimal: "",
+        emptyTable: "Sem dados disponíveis",
+        info: "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+        infoEmpty: "Mostrando de 0 até 0 de 0 registos",
+        infoFiltered: "(filtrado de MAX registros no total)",
+        infoPostFix: "",
+        thousands: ",",
+        lengthMenu: "Mostrar _MENU_ registros",
+        loadingRecords: "A carregar dados...",
+        processing: "A processar...",
+        search: "Procurar:",
+        zeroRecords: "Não foram encontrados resultados",
+        paginate: {
+          first: "Primeiro",
+          last: "Último",
+          next: "Seguinte",
+          previous: "Anterior"
+        },
+        aria: {
+          sortAscending: ": ordem crescente",
+          sortDescending: ": ordem decrescente"
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

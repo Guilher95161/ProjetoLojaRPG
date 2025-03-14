@@ -6,6 +6,11 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.nome
+class Plataforma(models.Model):
+    nome = models.CharField(max_length=50, unique=True)
+
+    def __str__(self) -> str:
+        return self.nome
 
 class Jogo(models.Model):
     nome = models.CharField(max_length=50)
@@ -14,6 +19,7 @@ class Jogo(models.Model):
     estoque = models.IntegerField()
     lancamento = models.DateField()
     categorias = models.ManyToManyField(Categoria)
+    plataformas = models.ManyToManyField(Plataforma)
 
     def __str__(self):
         return self.nome
