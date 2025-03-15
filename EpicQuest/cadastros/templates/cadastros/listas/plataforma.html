@@ -1,6 +1,8 @@
 {% extends 'paginas/base.html' %} {% load static %}
 {% block titulo %} Lista de Plataformas {% endblock %} {% block conteudo %}
-
+<h3>Lista de Plataformas registrados
+  <a href="{% url 'cadastrar-plataforma' %}" class="btn btn-primary btn-sm float end">Adicionar Plataforma</a>
+</h3>
 <hr>
 <form method="POST" action="">
   {% csrf_token %}

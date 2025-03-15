@@ -4,8 +4,8 @@
 {% block titulo %} Lista de Jogos {% endblock %}
 
 {% block conteudo %}
-<h3>Lista de Plataformas registrados{% if not user.groups.all.0.name == "Cliente" %} 
-  <a href="{% url 'cadastrar-plataforma' %}" class="btn btn-primary btn-sm float end">Adicionar Plataforma</a>{% endif %}
+<h3>Lista de Jogos registrados{% if not user.groups.all.0.name == "Cliente" %} 
+  <a href="{% url 'cadastrar-jogo' %}" class="btn btn-primary btn-sm float end">Adicionar Jogo</a>{% endif %}
 </h3>
 <hr>
 <form method="POST" action="{% url 'finalizar-compra' %}">
