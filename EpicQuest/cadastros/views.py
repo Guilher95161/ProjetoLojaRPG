@@ -37,7 +37,7 @@ class JogoUpdate(GroupRequiredMixin,LoginRequiredMixin,UpdateView):
         context['botao'] = "Atualizar"
         return context
 class JogoDelete(GroupRequiredMixin,LoginRequiredMixin,DeleteView):
-    group_required = ["Administrador","Funcionario"]
+    group_required = ["Administrador"]
     model = Jogo
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-jogo')
@@ -184,7 +184,7 @@ class CategoriaUpdate(GroupRequiredMixin,LoginRequiredMixin,UpdateView):
         return context
     
 class CategoriaDelete(GroupRequiredMixin,LoginRequiredMixin,DeleteView):
-    group_required = ["Administrador","Funcionario"]
+    group_required = ["Administrador"]
     model = Categoria
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-categoria')
@@ -295,7 +295,7 @@ class PlataformaUpdate(GroupRequiredMixin,LoginRequiredMixin,UpdateView):
         return context
     
 class PlataformaDelete(GroupRequiredMixin,LoginRequiredMixin,DeleteView):
-    group_required = ["Administrador","Funcionario"]
+    group_required = ["Administrador"]
     model = Plataforma
     template_name = 'cadastros/form-excluir.html'
     success_url = reverse_lazy('listar-plataforma')

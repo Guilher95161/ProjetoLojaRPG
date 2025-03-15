@@ -5,7 +5,10 @@ urlpatterns = [
     path('editar/jogo/<int:pk>/',JogoUpdate.as_view(),name='editar-jogo' ),
     path('excluir/jogo/<int:pk>',JogoDelete.as_view(),name='excluir-jogo'),
     path('listar/jogo/',JogoList.as_view(),name='listar-jogo'),
+
     path('finalizar-compra/', finalizar_compra, name='finalizar-compra'),
+    path('listar/compra/',CompraList.as_view(), name='listar-compra'),
+    path('listar/compra/<int:compra_id>/', ItemCompraList.as_view(), name='detalhar-compra'),
     
     path('cadastrar/categoria/',CategoriaCreate.as_view(),name='cadastrar-categoria'),
     path('editar/categoria/<int:pk>/',CategoriaUpdate.as_view(),name='editar-categoria' ),
@@ -14,12 +17,8 @@ urlpatterns = [
     
     path('listar/avaliacao/', AvaliacaoList.as_view(), name='listar-avaliacao'),
     path('cadastrar/avaliacao', AvaliacaoCreate.as_view(), name='cadastrar-avaliacao'),
-    path('avaliacao/editar/<int:pk>/', AvaliacaoUpdate.as_view(), name='editar-avaliacao'),
-    path('avaliacao/excluir/<int:pk>/', AvaliacaoDelete.as_view(), name='excluir-avaliacao'),
-
-    path('listar/compra/',CompraList.as_view(), name='listar-compra'),
-
-    path('listar/compra/<int:compra_id>/', ItemCompraList.as_view(), name='detalhar-compra'),
+    path('editar//avaliacao/<int:pk>/', AvaliacaoUpdate.as_view(), name='editar-avaliacao'),
+    path('excluir/avaliacao//<int:pk>/', AvaliacaoDelete.as_view(), name='excluir-avaliacao'),
 
     path('cadastrar/plataforma/',PlataformaCreate.as_view(),name='cadastrar-plataforma'),
     path('editar/plataforma/<int:pk>/',PlataformaUpdate.as_view(),name='editar-plataforma' ),

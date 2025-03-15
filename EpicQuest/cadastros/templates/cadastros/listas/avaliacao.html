@@ -4,11 +4,17 @@
 {% block titulo %} Lista de Avaliações {% endblock %}
 
 {% block conteudo %}
-<h3>Lista de Avaliações Registradas</h3>
+<h3>Lista de Avaliações Registradas
+  {% if request.user.groups.all.0.name in "Cliente"%}
+  <a href="{% url 'cadastrar-avaliacao' %}" class="btn btn-primary btn-sm float end">Adicione uma avaliação</a>
+  {% endif %}
+</h3>
 <hr>
-
+<form method="POST" action="">
+  {% csrf_token %}
 <div class="table-responsive">
-  <table class="table table-striped">
+  <table class="table table-striped" id="tabela-listar">
+    <thead>
     <tr>
       {% if request.user.groups.all.0.name in "Administrador,Funcionario" %}
         <th>Usuário</th>
@@ -19,7 +25,8 @@
       <th>Data</th>
       <th>Opções</th>
     </tr>
-    
+   </thead>
+   <tbody> 
     {% for avaliacao in object_list %}
     <tr>
       {% if request.user.groups.all.0.name in "Administrador,Funcionario" %}
@@ -30,8 +37,9 @@
       <td>{{ avaliacao.comentario|default:"Sem comentário" }}</td>
       <td>{{ avaliacao.data|date:"d/m/Y H:i" }}</td>
       <td>
-        <a href="{% url 'editar-avaliacao' avaliacao.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>
+        <a href="{% url 'editar-avaliacao' avaliacao.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>{% if request.user.groups.all.0.name in "Administrador" %}
         <a href="{% url 'excluir-avaliacao' avaliacao.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a>
+        {% endif %}
       </td>
     </tr>
     {% empty %}
@@ -39,9 +47,10 @@
       <td colspan="6">Nenhuma avaliação registrada</td>
     </tr>
     {% endfor %}
+  </tbody>
   </table>
 </div>
-
+</form>
 {% endblock %}
 {% block scripts %}
 <script>

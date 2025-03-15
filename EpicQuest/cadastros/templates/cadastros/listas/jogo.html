@@ -1,7 +1,11 @@
-{% extends 'paginas/base.html' %} {% load static %}
-{% block titulo %} Lista de Jogos {% endblock %} {% block conteudo %}
-<h3>Lista de Jogos registrados
-  <a href="{% url 'cadastrar-jogo' %}" class="btn btn-primary btn-sm float end">Adicionar Jogo</a>
+{% extends 'paginas/base.html' %}
+{% load static %}
+
+{% block titulo %} Lista de Jogos {% endblock %}
+
+{% block conteudo %}
+<h3>Lista de Plataformas registrados{% if not user.groups.all.0.name == "Cliente" %} 
+  <a href="{% url 'cadastrar-plataforma' %}" class="btn btn-primary btn-sm float end">Adicionar Plataforma</a>{% endif %}
 </h3>
 <hr>
 <form method="POST" action="{% url 'finalizar-compra' %}">
@@ -51,8 +55,8 @@
             <button type="button" class="btn btn-success btn-sm"
               onclick="adicionarAoCarrinho({{ jogo.id }}, '{{ jogo.nome }}', {{ jogo.preco }})">Adicionar</button>
             {% elif not user.groups.all.0.name == "Cliente" %}
-            <a href="{% url 'editar-jogo' jogo.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>
-            <a href="{% url 'excluir-jogo' jogo.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a>
+            <a href="{% url 'editar-jogo' jogo.pk %}" class="btn btn-warning btn-sm" title="Editar">Editar</a>{% if request.user.groups.all.0.name in "Administrador" %}
+            <a href="{% url 'excluir-jogo' jogo.pk %}" class="btn btn-danger btn-sm" title="Excluir">Excluir</a>{% endif %}
             {% endif %}
           </td>
         </tr>
@@ -74,49 +78,10 @@
   <button type="submit" class="btn btn-primary">Finalizar Compra</button>
   {% endif %}
 </form>
+{% endblock %}
 
-<script>
-  let carrinho = [];
-
-  function adicionarAoCarrinho(jogoId, nome, preco) {
-    let quantidadeInput = document.getElementById(`quantidade_${jogoId}`);
-    let quantidade = parseInt(quantidadeInput.value);
-
-    if (quantidade > 0) {
-      let itemExistente = carrinho.find(item => item.jogoId === jogoId);
-
-      if (itemExistente) {
-        itemExistente.quantidade += quantidade;
-      } else {
-        carrinho.push({ jogoId, nome, preco, quantidade });
-      }
-
-      atualizarResumoCompra();
-    }
-  }
-
-  function atualizarResumoCompra() {
-    let resumoDiv = document.getElementById("resumo-compra");
-    resumoDiv.innerHTML = "";
-
-    if (carrinho.length === 0) {
-      resumoDiv.innerHTML = "<p>Nenhum jogo adicionado ainda.</p>";
-      return;
-    }
-
-    let lista = "<ul>";
-    let total = 0;
-
-    carrinho.forEach(item => {
-      lista += `<li>${item.quantidade}x ${item.nome} - R$ ${(item.preco * item.quantidade).toFixed(2)}</li>`;
-      total += item.preco * item.quantidade;
-    });
-
-    lista += `</ul><p><strong>Total: R$ ${total.toFixed(2)}</strong></p>`;
-    resumoDiv.innerHTML = lista;
-  }
-</script>
 {% block scripts %}
+<script src="{% static 'js/carrinho.js' %}"></script>
 <script>
   $(document).ready(function () {
     $('#tabela-listar').DataTable({
@@ -151,5 +116,4 @@
     });
   });
 </script>
-{% endblock %}
 {% endblock %}

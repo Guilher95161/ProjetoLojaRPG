@@ -6,9 +6,11 @@
 {% block conteudo %}
 <h3>Lista de Compras Registradas</h3>
 <hr>
-
+<form method="POST" action="">
+  {% csrf_token %}
 <div class="table-responsive">
-  <table class="table table-striped">
+  <table class="table table-striped" id="tabela-listar">
+    <thead>
     <tr>
       {% if request.user.groups.all.0.name in "Administrador,Funcionario" %}
         <th>Usuário</th>
@@ -18,7 +20,8 @@
       <th>Data</th>
       <th>Opções</th>
     </tr>
-    
+  </thead>
+  <tbody>
     {% for compra in object_list %}
     <tr>
       {% if request.user.groups.all.0.name in "Administrador,Funcionario" %}
@@ -36,9 +39,10 @@
       <td colspan="6">Nenhuma compra registrada</td>
     </tr>
     {% endfor %}
+  </tbody>
   </table>
 </div>
-
+</form>
 {% endblock %}
 {% block scripts %}
 <script>

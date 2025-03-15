@@ -20,8 +20,8 @@
           <td>{{categoria.nome}}</td>
           <td><a href="{% url 'editar-categoria' categoria.pk %}" class="btn btn-warning btn-sm"
               title="Editar">Editar</a>
-            <a href="{% url 'excluir-categoria' categoria.pk %}" class="btn btn-danger btn-sm"
-              title="Excluir">Excluir</a>
+              {% if request.user.groups.all.0.name in "Administrador" %}<a href="{% url 'excluir-categoria' categoria.pk %}" class="btn btn-danger btn-sm"
+              title="Excluir">Excluir</a>{% endif %}
           </td>
         </tr>
         {% empty %}
